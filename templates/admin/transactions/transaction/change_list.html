@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+{% block content %}
+
+<h1 style="font-size: 2rem; text-decoration: underline;">CNAB Parser</h1>
+
+<a href="cnab_upload/" style="font-size: 1.5rem;">Upload CNAB Text File</a>
+
+{{block.super}}
+{% endblock %}
