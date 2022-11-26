@@ -16,6 +16,8 @@ class CNABImportForm(forms.Form):
 
 
 class TransactionAdmin(admin.ModelAdmin):
+    list_display = ("type", "shop_name", "value")
+
     def get_urls(self):
         urls = super().get_urls()
         new_urls = [
