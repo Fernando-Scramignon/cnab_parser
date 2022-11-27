@@ -1,5 +1,8 @@
 # cnab_parser
 
+## descrição
+
+Esse é um projeto que permite a conversão de um arquivo cnab simples por meio de requisições normais e upload de arquivos txt.
 
 ## Início Rápido
 
