@@ -24,4 +24,7 @@ class TransactionDetailSerializer(ModelSerializer):
 
 class TransactionShopSerializer(serializers.Serializer):
     shop_name = serializers.CharField(max_length=19)
-    total_value = serializers.DecimalField(max_digits=10, decimal_places=2)
+    income = serializers.DecimalField(10, 2)
+    outflow = serializers.DecimalField(10, 2)
+    balance = serializers.DecimalField(10, 2)
+    operations = TransactionSerializer(many=True)
