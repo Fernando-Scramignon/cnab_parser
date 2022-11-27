@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from .models import Transaction
 
+from transaction_types.serializers import TransactionTypeSerializer
+
 
 class TransactionSerializer(ModelSerializer):
     class Meta:
@@ -10,6 +12,14 @@ class TransactionSerializer(ModelSerializer):
         fields = "__all__"
 
         extra_kwargs = {"id": {"read_only": True}}
+
+
+class TransactionDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = "__all__"
+
+    type = TransactionTypeSerializer()
 
 
 class TransactionShopSerializer(serializers.Serializer):
