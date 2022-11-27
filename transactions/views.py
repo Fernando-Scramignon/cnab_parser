@@ -1,14 +1,18 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
-    ListAPIView,
 )
 
 from .models import Transaction
-from .serializers import TransactionSerializer, TransactionShopSerializer
+from .serializers import (
+    TransactionSerializer,
+    TransactionDetailSerializer,
+)
 
 from django.db.models import Sum
-import ipdb
 
 
 class TransactionView(ListCreateAPIView):
@@ -17,14 +21,60 @@ class TransactionView(ListCreateAPIView):
 
 
 class TransactionDetailView(RetrieveUpdateDestroyAPIView):
+
+    serializer_map = {
+        "DELETE": TransactionDetailSerializer,
+        "GET": TransactionDetailSerializer,
+        "PATCH": TransactionSerializer,
+    }
+
+    def get_serializer_class(self):
+        return self.serializer_map.get(self.request.method, self.serializer_class)
+
     queryset = Transaction.objects.all()
-    serializer_class = TransactionSerializer
+    serializer_class = TransactionDetailSerializer
 
 
-class TransactionAggregationView(ListAPIView):
-    queryset = (
-        Transaction.objects.values("shop_name")
-        .order_by("shop_name")
-        .annotate(total_value=Sum("value"))
-    )
-    serializer_class = TransactionShopSerializer
+# returns the operations and balance of each shop
+class TransactionAggregationView(APIView):
+    transactions = Transaction.objects.all()
+
+    shops = ()
+    output = []
+
+    for transaction in transactions:
+        if transaction.shop_name in shops:
+            continue
+        total_amount = 0
+        shops = (*shops, transaction.shop_name)
+
+        transaction_dict = {}
+        transaction_dict["shop_name"] = transaction.shop_name
+
+        operations = transactions.filter(shop_name=transaction.shop_name)
+
+        operations_cash_income = operations.filter(type__nature="Entrada").aggregate(
+            Sum("value")
+        )["value__sum"]
+
+        if not operations_cash_income:
+            operations_cash_income = 0
+
+        operations_cash_outflow = operations.filter(type__nature="Saída").aggregate(
+            Sum("value")
+        )["value__sum"]
+
+        if not operations_cash_outflow:
+            operations_cash_outflow = 0
+
+        transaction_dict["income"] = operations_cash_income
+        transaction_dict["outflow"] = operations_cash_outflow
+        transaction_dict["balance"] = operations_cash_income - operations_cash_outflow
+
+        operations_serializer = TransactionDetailSerializer(operations, many=True)
+        transaction_dict["operations"] = operations_serializer.data
+
+        output.append(transaction_dict)
+
+    def get(self, request):
+        return Response(self.output)

@@ -29,7 +29,9 @@ class CnabParser:
 
             serializer = TransactionSerializer(data=transaction)
             serializer.is_valid(raise_exception=True)
-            output.append(serializer.validated_data)
+            validated_data = serializer.validated_data
+            validated_data["type"] = validated_data["type"].type
+            output.append(validated_data)
 
         return output
 
@@ -55,7 +57,10 @@ class CnabParser:
 
                 serializer = TransactionSerializer(data=transaction_dict)
                 serializer.is_valid(raise_exception=True)
-                output.append(serializer.validated_data)
+                validated_data = serializer.validated_data
+                validated_data["type"] = validated_data["type"].type
+
+                output.append(validated_data)
 
                 line = file.readline()
 
