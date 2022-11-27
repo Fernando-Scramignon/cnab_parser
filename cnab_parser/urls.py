@@ -16,11 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("transactions.urls")),
-    path("api/", include("transaction_types.urls"))
+    path("api/", include("transaction_types.urls")),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
