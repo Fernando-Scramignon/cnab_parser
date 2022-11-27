@@ -10,6 +10,7 @@ from .models import Transaction
 from .serializers import (
     TransactionSerializer,
     TransactionDetailSerializer,
+    TransactionShopSerializer,
 )
 
 from django.db.models import Sum
@@ -37,6 +38,10 @@ class TransactionDetailView(RetrieveUpdateDestroyAPIView):
 
 # returns the operations and balance of each shop
 class TransactionAggregationView(APIView):
+    # this is for the documentation (drf-spectacular)
+    queryset = Transaction.objects
+    serializer_class = TransactionShopSerializer
+
     transactions = Transaction.objects.all()
 
     shops = ()
