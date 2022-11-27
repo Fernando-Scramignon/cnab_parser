@@ -1,10 +1,16 @@
-from django.shortcuts import render
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .models import TransactionType
-from .serializers import TransactionSerializer
+
+
+from .serializers import TransactionTypeSerializer
 
 
 class TransactionTypeView(ListAPIView):
     queryset = TransactionType.objects.all()
-    serializer_class = TransactionSerializer
+    serializer_class = TransactionTypeSerializer
+
+
+class TransactionTypeDetailView(RetrieveAPIView):
+    queryset = TransactionType.objects.all()
+    serializer_class = TransactionTypeSerializer
