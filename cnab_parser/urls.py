@@ -25,10 +25,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("transactions.urls")),
     path("api/", include("transaction_types.urls")),
-    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("docs/", SpectacularAPIView.as_view(), name="docs"),
     path(
         "schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
+        SpectacularSwaggerView.as_view(url_name="docs"),
         name="swagger-ui",
     ),
 ]
