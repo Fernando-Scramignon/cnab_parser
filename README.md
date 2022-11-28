@@ -121,9 +121,9 @@ Na tela de admin também é possível adicionar, editar e excluir transações.
 
 Se tudo foi configurado corretamente, você será capaz de acessar a documentação das rotas por essas urls
 
-http://localhost:8000/api/docs/
+http://localhost:8000/docs/
 <br>
-http://localhost:8000/api/docs/swagger-ui/
+http://localhost:8000/docs/swagger-ui/
 
 O primeiro é o download de um arquivo yaml e o segundo a interface da documentação.
 <br>
