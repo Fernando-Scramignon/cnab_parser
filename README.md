@@ -4,9 +4,33 @@
 
 Esse é um projeto que permite a conversão de um arquivo cnab simples por meio de requisições normais e upload de arquivos txt.
 
+## Tabela de Conteúdos
+
+- [Diagramas](#diagramas)
+- [Início Rápido](#início-rápido)
+  - [Criação do ambiente virtual](#criação-do-ambiente-virtual)
+  - [Entrando no ambiente virtual](#entrando-no-ambiente-virtual)
+  - [Instalando dependências](#instalando-dependências)
+  - [Rodando migrations](#rodando-migrations)
+  - [Criando um superuser](#criando-um-superuser)
+  - [Rodando o servidor](#rodando-o-servidor)
+  - [Informações importantes](#informações-importantes)
+  - [Upload de arquivo CNAB](#upload-de-arquivo-cnab)
+  - [Rotas da documentação](#rotas-da-documentação)
+
+## Diagramas
+
+Transações:
+<br>
+![DER](cnab_documentation.png)
+
+Tipos de transações
+<br>
+![DER](transaction_types.png)
+
 ## Início Rápido
 
-- **Criação do ambiente virtual**
+- ### Criação do ambiente virtual
 
 ```python
 python -m venv venv
@@ -18,7 +42,7 @@ Set-ExecutionPolicy AllSigned
 ```
 <br>
 
-- **Entre no ambiente virtual**
+- ### Entrando no ambiente virtual
 
 linux:
 ```
@@ -32,7 +56,7 @@ windows:
 
 <br>
 
-- **Instalando dependências**
+- ### Instalando dependências
 
 Esse comando instala recursivamente todas as dependências no arquivo requirements.txt
 
@@ -42,17 +66,30 @@ pip install -r requirements.txt
 
 <br>
 
-- **Rodando migrations**
+- ### Rodando migrations
 
 Isso vai criar as tabelas do banco de dados e popular a tabela de tipos com os valores default
 
 ```python
-./manage.py migrate
+python manage.py migrate
 ```
 
 <br>
 
-- **Rodando o servidor**
+
+- ### Criando um superuser
+
+Para poder fazer o upload de um arquivo é preciso entrar na seção de admin da applicação.
+
+```python
+python manage.py createsuperuser
+```
+
+Siga os passo do terminal para finalizar a criação
+
+<br>
+
+- ### Rodando o servidor
 
 Esse comando vai rodar o servidor em http://localhost:8000/
 
@@ -62,7 +99,25 @@ Esse comando vai rodar o servidor em http://localhost:8000/
 
 <br>
 
-- **Rotas da documentação**
+- ### Informações importantes
+  - Um arquivo chamado CNAB.txt é um exemplo de arquivo válido para upload que se encontra na base do projeto
+  - Outro arquivo chamado cnab_parser.json é um arquivo que pode ser usando no insomnia para obter as rotas
+
+<br>
+
+- ### Upload de arquivo CNAB
+
+Para fazer um upload de arquivo é necessário entrar na parte de admin da aplicação:
+<br>
+http://localhost:8000/admin/
+<br>
+Clique em **transactions** e em seguida em **Upload CNAB Text File**
+<br>
+Na tela de admin também é possível adicionar, editar e excluir transações.
+
+<br>
+
+- ### Rotas da documentação
 
 Se tudo foi configurado corretamente, você será capaz de acessar a documentação das rotas por essas urls
 
