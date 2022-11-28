@@ -94,7 +94,7 @@ Siga os passo do terminal para finalizar a criação
 Esse comando vai rodar o servidor em http://localhost:8000/
 
 ```python
-./manage.py runserver
+python manage.py runserver
 ```
 
 <br>
