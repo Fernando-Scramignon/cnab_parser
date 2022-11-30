@@ -1,3 +1,5 @@
+from django.db.utils import OperationalError
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -46,40 +48,45 @@ class TransactionAggregationView(APIView):
 
     shops = ()
     output = []
+    try:
+        for transaction in transactions:
+            if transaction.shop_name in shops:
+                continue
+            total_amount = 0
+            shops = (*shops, transaction.shop_name)
 
-    for transaction in transactions:
-        if transaction.shop_name in shops:
-            continue
-        total_amount = 0
-        shops = (*shops, transaction.shop_name)
+            transaction_dict = {}
+            transaction_dict["shop_name"] = transaction.shop_name
 
-        transaction_dict = {}
-        transaction_dict["shop_name"] = transaction.shop_name
+            operations = transactions.filter(shop_name=transaction.shop_name)
 
-        operations = transactions.filter(shop_name=transaction.shop_name)
+            operations_cash_income = operations.filter(
+                type__nature="Entrada"
+            ).aggregate(Sum("value"))["value__sum"]
 
-        operations_cash_income = operations.filter(type__nature="Entrada").aggregate(
-            Sum("value")
-        )["value__sum"]
+            if not operations_cash_income:
+                operations_cash_income = 0
 
-        if not operations_cash_income:
-            operations_cash_income = 0
+            operations_cash_outflow = operations.filter(type__nature="Saída").aggregate(
+                Sum("value")
+            )["value__sum"]
 
-        operations_cash_outflow = operations.filter(type__nature="Saída").aggregate(
-            Sum("value")
-        )["value__sum"]
+            if not operations_cash_outflow:
+                operations_cash_outflow = 0
 
-        if not operations_cash_outflow:
-            operations_cash_outflow = 0
+            transaction_dict["income"] = operations_cash_income
+            transaction_dict["outflow"] = operations_cash_outflow
+            transaction_dict["balance"] = (
+                operations_cash_income - operations_cash_outflow
+            )
 
-        transaction_dict["income"] = operations_cash_income
-        transaction_dict["outflow"] = operations_cash_outflow
-        transaction_dict["balance"] = operations_cash_income - operations_cash_outflow
+            operations_serializer = TransactionDetailSerializer(operations, many=True)
+            transaction_dict["operations"] = operations_serializer.data
 
-        operations_serializer = TransactionDetailSerializer(operations, many=True)
-        transaction_dict["operations"] = operations_serializer.data
+            output.append(transaction_dict)
 
-        output.append(transaction_dict)
+        def get(self, request):
+            return Response(self.output)
 
-    def get(self, request):
-        return Response(self.output)
+    except OperationalError:
+        pass
