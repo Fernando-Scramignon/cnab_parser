@@ -1,12 +1,12 @@
 from django.db import models
 
 
-class NatureChoices(models.Choices):
+class NatureChoices(models.TextChoices):
     cash_income = "Entrada"
     cash_outflow = "Saída"
 
 
-class SignalChoices(models.Choices):
+class SignalChoices(models.TextChoices):
     plus = "+"
     minus = "-"
 
